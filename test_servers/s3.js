@@ -9,6 +9,11 @@ app.get("/", (req, res) => {
   res.send({ msg: "5003" });
 });
 
+app.get("/other", (req, res) => {
+  console.log("Request Received! on 5003");
+  res.json({ msg: "5003 - other" });
+});
+
 app.listen(5003, () => {
   console.log("Server started on PORT 5003");
 });

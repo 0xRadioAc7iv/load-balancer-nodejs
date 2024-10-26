@@ -1,4 +1,4 @@
-- [ ] Cache GET Requests & Invalidate it after a certain period.
+- [x] Cache GET Requests & Invalidate it after a certain period.
 - [ ] Improve Server Handling (Discard Unavailable Servers)
 - [ ] Improve Server Response Handling
 - [ ] Implement Failover Strategies
