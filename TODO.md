@@ -6,8 +6,8 @@
 - [ ] Add Client Authentication
 - [ ] Send Client's requests to the same servers they are authenticated to
 - [ ] Implement Rate Limiting
-- [ ] Hide Client's IP for Privacy
-- [ ] Add Logging for each Request & Response
+- [x] Hide Client's IP for Privacy
+- [x] Add Logging for each Request & Response
 - [ ] Block Certain IPs
-- [ ] Add gzip Compression for each response
+- [x] Add gzip Compression for each response
 - [ ] Refactor the Code

@@ -1,12 +1,14 @@
 import express from "express";
 import { SERVERS } from "./config.js";
 import { logger } from "./middlewares/logger.js";
+import compression from "compression";
 
 const app = express();
 let currentServer = 0; // Server Index, ranges from 0 to 2
 
 const cacheArray = new Map(); // Temporary Solution for Caching GET Requests
 
+app.use(compression());
 app.use(express.json());
 app.use(logger);
 
@@ -15,6 +17,10 @@ app.use("*", async (request, response) => {
   const basePath = SERVERS[currentServer];
   const url = request.originalUrl;
   const finalUrl = basePath + url;
+
+  // Remove User's IP Address
+  delete request.ip;
+  delete request.ips;
 
   if (request.method === "GET" && cacheArray.has(url)) {
     const requestTime = Date.now();
