@@ -1,13 +1,8 @@
 - [x] Cache GET Requests & Invalidate it after a certain period.
-- [ ] Improve Server Handling (Discard Unavailable Servers)
-- [ ] Improve Server Response Handling
-- [ ] Implement Failover Strategies
+- [x] Implement Failover Strategies (Discard Unavailable Servers)
 - [ ] Add TLS Support for HTTPS
-- [ ] Add Client Authentication
-- [ ] Send Client's requests to the same servers they are authenticated to
+- [ ] Add Client Authentication & Sticky Sessions
 - [ ] Implement Rate Limiting
-- [x] Hide Client's IP for Privacy
 - [x] Add Logging for each Request & Response
-- [ ] Block Certain IPs
 - [x] Add gzip Compression for each response
-- [ ] Refactor the Code
+- [ ] Refactor & Improve the Code

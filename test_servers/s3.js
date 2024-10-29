@@ -14,6 +14,10 @@ app.get("/other", (req, res) => {
   res.json({ msg: "5003 - other" });
 });
 
+app.get("/health", (req, res) => {
+  res.sendStatus(200);
+});
+
 app.listen(5003, () => {
   console.log("Server started on PORT 5003");
 });

@@ -20,7 +20,6 @@ export function isCached(method, url) {
   return { isResponseCached: false, responseBody: null };
 }
 
-export function cacheServerResponse(method, url, response) {
-  if (method === "GET")
-    cache.set(url, { body: response, cachedTime: Date.now() });
+export function cacheServerResponse(url, response) {
+  cache.set(url, { body: response, cachedTime: Date.now() });
 }
