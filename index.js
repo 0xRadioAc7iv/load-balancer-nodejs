@@ -9,29 +9,33 @@ import fs from "node:fs";
 import https from "node:https";
 import { rateLimit } from "express-rate-limit";
 
+// Initialize available servers array and current server index for round-robin load balancing
 let availableServers = [];
 let currentServer = 0; // Server Index, ranges from 0 to 2
 
 const app = express();
 
+// Options for HTTPS server (key and certificate files)
 const options = {
   key: fs.readFileSync("./server.key"),
   cert: fs.readFileSync("./server.cert"),
 };
 
+// Set up rate limiter middleware
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 Minutes
-  limit: 100, // 100 Successful Requests allowed in 15 Minutes
+  windowMs: 15 * 60 * 1000, // 15-minute window
+  limit: 100, // Allow max 100 requests per 15 minutes
   message: "You have reached your rate limit! Please try again after some time",
   standardHeaders: "draft-6",
   skipFailedRequests: true,
 });
 
 app.use(limiter);
-app.use(compression());
-app.use(express.json());
+app.use(compression()); // Enable GZIP compression for responses
+app.use(express.json()); // Parse incoming JSON requests
 app.use(logger);
 
+// Main route handler for all incoming requests
 app.use("*", async (request, response) => {
   const url = request.originalUrl;
   const method = request.method;
@@ -40,6 +44,7 @@ app.use("*", async (request, response) => {
     return response.status(503).send("No servers available");
   }
 
+  // Select target server based on round-robin and update current server index
   const targetURL = SERVERS[currentServer] + url;
   currentServer = (currentServer + 1) % availableServers.length;
 
@@ -50,8 +55,8 @@ app.use("*", async (request, response) => {
     return response.status(200).send(responseBody);
   }
 
+  // Attempt to send the request to the selected server and handle response
   try {
-    // Sends the Request
     const serverResponse = await sendRequestToServer(
       targetURL,
       method,
@@ -59,7 +64,6 @@ app.use("*", async (request, response) => {
       request.body
     );
 
-    // Extracts the Response Body as JSON
     const responseBody = await serverResponse.json();
 
     if (serverResponse.ok && method === "GET") {
@@ -74,6 +78,7 @@ app.use("*", async (request, response) => {
   }
 });
 
+// Function to ping servers and update the available servers list
 async function pingServers() {
   const servers = [];
 
@@ -92,7 +97,8 @@ async function pingServers() {
   availableServers = servers;
 }
 
-cron.schedule("*/5 * * * * *", async () => {
+// Schedule server health checks every 5 seconds to update available servers list
+cron.schedule("*/30 * * * * *", async () => {
   await pingServers();
 });
 
