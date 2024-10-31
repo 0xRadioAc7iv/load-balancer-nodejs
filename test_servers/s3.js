@@ -1,7 +1,9 @@
 import express from "express";
+import cors from "cors";
 
 const app = express();
 
+app.use(cors({ methods: ["GET"], origin: "https://localhost:443" }));
 app.use(express.json());
 
 app.get("/", (req, res) => {

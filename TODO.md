@@ -1,8 +1,10 @@
 - [x] Cache GET Requests & Invalidate it after a certain period.
 - [x] Implement Failover Strategies (Discard Unavailable Servers)
-- [ ] Add TLS Support for HTTPS
+- [x] Add TLS Support for HTTPS
 - [ ] Add Client Authentication & Sticky Sessions
-- [ ] Implement Rate Limiting
+- [x] Implement Rate Limiting
 - [x] Add Logging for each Request & Response
 - [x] Add gzip Compression for each response
+- [ ] Document the code (JSDoc)
+- [ ] Write Tests
 - [ ] Refactor & Improve the Code

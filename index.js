@@ -7,6 +7,7 @@ import cron from "node-cron";
 import { SERVERS } from "./config.js";
 import fs from "node:fs";
 import https from "node:https";
+import { rateLimit } from "express-rate-limit";
 
 let availableServers = [];
 let currentServer = 0; // Server Index, ranges from 0 to 2
@@ -18,6 +19,15 @@ const options = {
   cert: fs.readFileSync("./server.cert"),
 };
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 Minutes
+  limit: 100, // 100 Successful Requests allowed in 15 Minutes
+  message: "You have reached your rate limit! Please try again after some time",
+  standardHeaders: "draft-6",
+  skipFailedRequests: true,
+});
+
+app.use(limiter);
 app.use(compression());
 app.use(express.json());
 app.use(logger);
@@ -53,7 +63,6 @@ app.use("*", async (request, response) => {
     const responseBody = await serverResponse.json();
 
     if (serverResponse.ok && method === "GET") {
-      console.log(url, responseBody);
       cacheServerResponse(url, responseBody);
     }
 
