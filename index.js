@@ -5,11 +5,18 @@ import { sendRequestToServer } from "./utils/requestHandler.js";
 import { cacheServerResponse, isCached } from "./utils/cache.js";
 import cron from "node-cron";
 import { SERVERS } from "./config.js";
+import fs from "node:fs";
+import https from "node:https";
 
 let availableServers = [];
 let currentServer = 0; // Server Index, ranges from 0 to 2
 
 const app = express();
+
+const options = {
+  key: fs.readFileSync("./server.key"),
+  cert: fs.readFileSync("./server.cert"),
+};
 
 app.use(compression());
 app.use(express.json());
@@ -80,6 +87,6 @@ cron.schedule("*/5 * * * * *", async () => {
   await pingServers();
 });
 
-app.listen(3000, () => {
-  console.log("Load Balancer started on PORT 3000");
+https.createServer(options, app).listen(443, () => {
+  console.log("Server is running on https://localhost:443");
 });
