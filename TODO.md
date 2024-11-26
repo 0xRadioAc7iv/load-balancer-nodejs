@@ -2,12 +2,11 @@
 
 - [x] Cache GET Requests & Invalidate it after a certain period.
 - [x] Implement Failover Strategies (Discard Unavailable Servers)
-- [x] Add TLS Support for HTTPS
 - [x] Implement Rate Limiting
 - [x] Add Logging for each Request & Response
 - [x] Add gzip Compression for each response
 - [x] Document the code
-- [ ] Write Tests
+- [x] Write Tests
 - [x] Add [README.md](./README.md)
 
 ## v2

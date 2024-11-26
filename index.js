@@ -5,8 +5,6 @@ import { sendRequestToServer } from "./utils/requestHandler.js";
 import { cacheServerResponse, isCached } from "./utils/cache.js";
 import cron from "node-cron";
 import { SERVERS } from "./config.js";
-import fs from "node:fs";
-import https from "node:https";
 import { rateLimit } from "express-rate-limit";
 
 // Initialize available servers array and current server index for round-robin load balancing
@@ -14,12 +12,6 @@ let availableServers = [];
 let currentServer = 0; // Server Index, ranges from 0 to 2
 
 const app = express();
-
-// Options for HTTPS server (key and certificate files)
-const options = {
-  key: fs.readFileSync("./server.key"),
-  cert: fs.readFileSync("./server.cert"),
-};
 
 // Set up rate limiter middleware
 const limiter = rateLimit({
@@ -97,11 +89,12 @@ async function pingServers() {
   availableServers = servers;
 }
 
-// Schedule server health checks every 5 seconds to update available servers list
+// Schedule server health checks every 30 seconds to update available servers list
 cron.schedule("*/30 * * * * *", async () => {
   await pingServers();
 });
 
-https.createServer(options, app).listen(443, () => {
-  console.log("Server is running on https://localhost:443");
+app.listen(3000, async () => {
+  await pingServers();
+  console.log("Server is running on http://localhost:3000");
 });
