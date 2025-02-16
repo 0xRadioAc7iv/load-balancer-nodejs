@@ -1,4 +1,9 @@
-export async function sendRequestToServer(url, method, headers, body) {
+export async function sendRequestToServer(
+  url: string,
+  method: string,
+  headers: any,
+  body: BodyInit
+) {
   try {
     const response = await fetch(url, {
       method: method,

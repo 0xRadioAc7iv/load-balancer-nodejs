@@ -4,8 +4,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
+    "build": "tsc",
+    "start:dev": "nodemon",
+    "dev": "npm run start:dev",
+    "start": "node dist/index.js",
+    "prestart": "npm run build",
     "test": "jest --runInBand"
   },
   "author": "Manav Gadhiya",
@@ -22,6 +25,6 @@
     "@types/compression": "^1.7.5",
     "@types/node-cron": "^3.0.11",
     "jest": "^29.7.0",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.9"
   }
 }

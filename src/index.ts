@@ -33,7 +33,8 @@ app.use("*", async (request, response) => {
   const method = request.method;
 
   if (availableServers.length === 0) {
-    return response.status(503).send("No servers available");
+    response.status(503).send("No servers available");
+    return;
   }
 
   // Select target server based on round-robin and update current server index
@@ -44,7 +45,8 @@ app.use("*", async (request, response) => {
 
   if (isResponseCached) {
     response.setHeader("X-Cache", "HIT");
-    return response.status(200).send(responseBody);
+    response.status(200).send(responseBody);
+    return;
   }
 
   // Attempt to send the request to the selected server and handle response
@@ -56,17 +58,19 @@ app.use("*", async (request, response) => {
       request.body
     );
 
-    const responseBody = await serverResponse.json();
+    if (serverResponse) {
+      const responseBody = await serverResponse.json();
 
-    if (serverResponse.ok && method === "GET") {
-      cacheServerResponse(url, responseBody);
+      if (serverResponse.ok && method === "GET") {
+        cacheServerResponse(url, responseBody);
+      }
+
+      // Sends Response back to the client
+      response.status(serverResponse.status).send(responseBody);
     }
-
-    // Sends Response back to the client
-    return response.status(serverResponse.status).send(responseBody);
   } catch (error) {
     console.log(error);
-    return response.sendStatus(500);
+    response.sendStatus(500);
   }
 });
 
