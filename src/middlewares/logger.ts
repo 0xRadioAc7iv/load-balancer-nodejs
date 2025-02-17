@@ -1,24 +1,31 @@
-/**
- * Middleware function that logs details of each request and response.
- * Logs the HTTP method, request URL, status code, and the duration it took to complete the request.
- *
- * @param {Object} request - Express request object.
- * @param {Object} response - Express response object.
- * @param {Function} next - Callback function to pass control to the next middleware.
- */
-export function logger(request, response, next) {
-  const now = Date.now();
+import { Request, Response, NextFunction } from "express";
+import logger from "../utils/logging";
 
-  // Event listener for when the response finishes
-  response.on("finish", () => {
-    const duration = Date.now() - now;
+function loggingMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
+  const startHrTime = process.hrtime();
 
-    console.log(
-      `[${new Date().toUTCString()}] ${request.method} ${
-        request.originalUrl
-      } - ${response.statusCode} (${duration}ms)`
-    );
+  res.on("finish", () => {
+    const elapsedHrTime = process.hrtime(startHrTime);
+    const elapsedTimeInMs = elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6;
+
+    const message = `${req.method} ${req.originalUrl} ${
+      res.statusCode
+    } ${elapsedTimeInMs.toFixed(3)} ms`;
+
+    if (res.statusCode >= 500) {
+      logger.error(message);
+    } else if (res.statusCode >= 400) {
+      logger.warn(message);
+    } else {
+      logger.info(message);
+    }
   });
 
   next();
 }
+
+export { loggingMiddleware };

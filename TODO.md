@@ -1,26 +1,13 @@
-## v1
-
-- [x] Cache GET Requests & Invalidate it after a certain period.
-- [x] Implement Failover Strategies (Discard Unavailable Servers)
-- [x] Implement Rate Limiting
-- [x] Add Logging for each Request & Response
-- [x] Add gzip Compression for each response
-- [x] Document the code
-- [x] Write Tests
-- [x] Add [README.md](./README.md)
-
-## v2
-
+- [ ] Redis for Caching
+- [ ] Implement Memory Store for storing Server List
 - [ ] Implement Least Connections for load balancing
-- [ ] Implement Client Auth & Sticky Sessions
-- [ ] Role based Rate Limiting (Free vs Premium Users)
-  - Premium Users have a higher rate limit than Free Users
-- [ ] Detailed Monitoring & Metrics
-  - Implement detailed logging of metrics, including server response times, cache hit ratios, traffic distribution, and load balancer health.
+- [ ] Implement Sticky Sessions (for websockets)
 - [ ] Admin Dashboard
-  - visualize and manage server status, request logs, rate limits, and traffic distribution.
+  - visualize and manage server status, request logs, and traffic distribution.
+  - [ ] Detailed Logging (Implement detailed logging of metrics, including server response times, cache hit ratios, traffic distribution, and load balancer health)
 - [ ] Add Support for Websocket Servers
-- [ ] Config to change between HTTP & Websocket Load Balancer
-- [ ] Document the code
+- [x] Config to change between HTTP & Websocket Load Balancer
+- [ ] Supports scaling servers (new server IPs automatically get added to the list w/o manual config)
+
+- [ ] Documentation
 - [ ] Write Tests
-- [ ] Refactor & Improve the Code

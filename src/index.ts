@@ -1,45 +1,41 @@
-import express from "express";
-import { logger } from "./middlewares/logger.js";
+import express, { urlencoded } from "express";
+import { loggingMiddleware } from "./middlewares/logger.js";
 import compression from "compression";
 import { sendRequestToServer } from "./utils/requestHandler.js";
 import { cacheServerResponse, isCached } from "./utils/cache.js";
 import cron from "node-cron";
-import { SERVERS } from "./config.js";
-import { rateLimit } from "express-rate-limit";
-
-// Initialize available servers array and current server index for round-robin load balancing
-let availableServers = [];
-let currentServer = 0; // Server Index, ranges from 0 to 2
+import { ALLOWED_ORIGINS, SERVERS } from "./config.js";
+import { handleErrors } from "./middlewares/errorHandler.js";
+import cors from "cors";
+import helmet from "helmet";
+import { limiter } from "./utils/limiter.js";
+import { AVAILABLE_SERVERS, generateTargetURL } from "./utils/balancing.js";
 
 const app = express();
 
-// Set up rate limiter middleware
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15-minute window
-  limit: 100, // Allow max 100 requests per 15 minutes
-  message: "You have reached your rate limit! Please try again after some time",
-  standardHeaders: "draft-6",
-  skipFailedRequests: true,
-});
-
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === "production" ? ALLOWED_ORIGINS : "*",
+  })
+);
+app.use(helmet());
 app.use(limiter);
 app.use(compression()); // Enable GZIP compression for responses
 app.use(express.json()); // Parse incoming JSON requests
-app.use(logger);
+app.use(urlencoded({ extended: false }));
+app.use(loggingMiddleware);
 
 // Main route handler for all incoming requests
 app.use("*", async (request, response) => {
   const url = request.originalUrl;
   const method = request.method;
 
-  if (availableServers.length === 0) {
+  if (AVAILABLE_SERVERS.size === 0) {
     response.status(503).send("No servers available");
     return;
   }
 
-  // Select target server based on round-robin and update current server index
-  const targetURL = SERVERS[currentServer] + url;
-  currentServer = (currentServer + 1) % availableServers.length;
+  const targetURL = generateTargetURL(url);
 
   const { isResponseCached, responseBody } = isCached(method, url);
 
@@ -74,23 +70,22 @@ app.use("*", async (request, response) => {
   }
 });
 
+app.use(handleErrors);
+
 // Function to ping servers and update the available servers list
 async function pingServers() {
-  const servers = [];
-
   for await (const server of SERVERS) {
     try {
       const response = await fetch(`${server}/health`);
       if (response.ok) {
-        servers.push(server);
+        AVAILABLE_SERVERS.set(server, true);
         console.log(`Yes: ${server}`);
       }
     } catch (error) {
+      AVAILABLE_SERVERS.set(server, false);
       console.log(`No: ${server}`);
     }
   }
-
-  availableServers = servers;
 }
 
 // Schedule server health checks every 30 seconds to update available servers list

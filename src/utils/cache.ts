@@ -2,7 +2,7 @@
 
 const cache = new Map();
 
-export function isCached(method, url) {
+export function isCached(method: string, url: string) {
   if (method !== "GET") return { isResponseCached: false, responseBody: null };
 
   if (cache.has(url)) {
@@ -20,6 +20,6 @@ export function isCached(method, url) {
   return { isResponseCached: false, responseBody: null };
 }
 
-export function cacheServerResponse(url, response) {
+export function cacheServerResponse(url: string, response: string) {
   cache.set(url, { body: response, cachedTime: Date.now() });
 }
