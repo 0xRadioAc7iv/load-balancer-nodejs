@@ -1,7 +1,0 @@
-- [ ] Admin Dashboard
-  - [ ] Total Servers Connected
-  - [ ] Cache Hit Ratios
-  - [ ] Traffic Distribution
-  - [ ] Avg. Server Response Times
-  - [ ] Logs
-- [ ] JSDOC
