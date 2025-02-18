@@ -1,6 +1,12 @@
 import { BALANCING_METHOD, SERVERS } from "../config";
 
 const AVAILABLE_SERVERS = new Map<string, boolean>();
+const CONNECTION_COUNTS = new Map<string, number>();
+
+SERVERS.forEach((server) => {
+  CONNECTION_COUNTS.set(server, 0);
+});
+
 let currentServer = 0;
 
 const roundRobin = (url: string): string => {
@@ -11,7 +17,21 @@ const roundRobin = (url: string): string => {
 };
 
 const leastConnections = (url: string): string => {
-  return "";
+  let leastConnServer = SERVERS[0];
+  let leastConnections = CONNECTION_COUNTS.get(leastConnServer) as number;
+
+  SERVERS.forEach((server) => {
+    const currentConnCount = CONNECTION_COUNTS.get(server) as number;
+    if (currentConnCount < leastConnections) {
+      leastConnServer = server;
+      leastConnections = currentConnCount;
+    }
+  });
+
+  CONNECTION_COUNTS.set(leastConnServer, leastConnections + 1);
+
+  const targetURL = leastConnServer + url;
+  return targetURL;
 };
 
 const generateTargetURL = (url: string): string => {

@@ -1,13 +1,7 @@
-- [ ] Redis for Caching
-- [ ] Implement Memory Store for storing Server List
-- [ ] Implement Least Connections for load balancing
-- [ ] Implement Sticky Sessions (for websockets)
 - [ ] Admin Dashboard
-  - visualize and manage server status, request logs, and traffic distribution.
-  - [ ] Detailed Logging (Implement detailed logging of metrics, including server response times, cache hit ratios, traffic distribution, and load balancer health)
-- [ ] Add Support for Websocket Servers
-- [x] Config to change between HTTP & Websocket Load Balancer
-- [ ] Supports scaling servers (new server IPs automatically get added to the list w/o manual config)
-
-- [ ] Documentation
-- [ ] Write Tests
+  - [ ] Total Servers Connected
+  - [ ] Cache Hit Ratios
+  - [ ] Traffic Distribution
+  - [ ] Avg. Server Response Times
+  - [ ] Logs
+- [ ] JSDOC

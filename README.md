@@ -9,7 +9,6 @@ This project implements a load balancer using Node.js and Express, featuring rat
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Project Structure](#project-structure)
-- [Testing](#testing)
 - [License](#license)
 
 ## Features
@@ -59,14 +58,6 @@ Edit the `config.js` file to specify the list of backend servers:
     │   ├── cache.js            # Functions for caching responses
     │   └── requestHandler.js   # Utility to handle server requests
     └── README.md             # README file for project documentation
-
-## Testing
-
-To test the project, run the following command:
-
-```
-npm test
-```
 
 ## License
 

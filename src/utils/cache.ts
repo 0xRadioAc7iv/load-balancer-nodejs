@@ -1,5 +1,3 @@
-// Temporary Solution for Caching GET Requests
-
 const cache = new Map();
 
 export function isCached(method: string, url: string) {

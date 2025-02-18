@@ -1,8 +1,6 @@
-import { BalancingMethod, Protocol } from "./types";
+import { BalancingMethod } from "./types";
 
 const LOGGING_DIRECTORY = "./logs/";
-
-const PROTOCOL: Protocol = "http";
 
 const BALANCING_METHOD: BalancingMethod = "round-robin";
 
@@ -14,10 +12,4 @@ const SERVERS = [
   "http://localhost:5003",
 ];
 
-export {
-  LOGGING_DIRECTORY,
-  PROTOCOL,
-  BALANCING_METHOD,
-  ALLOWED_ORIGINS,
-  SERVERS,
-};
+export { LOGGING_DIRECTORY, BALANCING_METHOD, ALLOWED_ORIGINS, SERVERS };
